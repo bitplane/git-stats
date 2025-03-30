@@ -14,7 +14,7 @@ while IFS= read -r repo || [ -n "$repo" ]; do
     continue
   fi
   echo "Processing repository: $repo"
-  ./stats.sh "$repo"
+  ./scripts/stats.sh "$repo"
 done < repos.txt
 
 echo "✅ All repositories processed."
