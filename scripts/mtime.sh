@@ -15,15 +15,6 @@ fi
 
 cd "$TARGET_DIR"
 
-# Skip Makefile when run from make or if explicitly stated
-# More reliable detection of running under make
-if [ -n "${MAKE+x}" ] || [ -n "${MAKEFLAGS+x}" ] || [ -n "${MAKELEVEL+x}" ] || ps -o ppid= $ | xargs ps -o comm= | grep -q make; then
-  SKIP_FILES="Makefile"
-  echo "Running from make, will skip Makefile"
-else
-  SKIP_FILES=""
-fi
-
 # Get list of files with uncommitted changes
 CHANGED_FILES=$(git status --porcelain | grep -v "??" | awk '{print $2}' || echo "")
 
