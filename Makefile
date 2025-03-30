@@ -12,23 +12,28 @@ SCRIPTS_DIR = scripts
 DATA_DIR = data
 
 # Default target - first update mtimes, then process files
-all: update-mtimes process-all
+all: update-mtimes process-all index
 
 # Weekly update target - only run if CSVs are older than a week
-weekly: update-mtimes check-week-old process-all
+weekly: update-mtimes check-week-old process-all index
 
-# Process all files
-process-all: csv-files md-files graphs
+# Generate main index file
+index: $(CSV_FILES)
+	@echo "Generating main index..."
+	@$(SCRIPTS_DIR)/index.sh > $(DATA_DIR)/index.md
 
 # Update file modification times to match git history
 update-mtimes:
 	@echo "Updating file modification times from git history..."
-	@$(SCRIPTS_DIR)/update-mtimes.sh
+	@$(SCRIPTS_DIR)/mtime.sh
 
 # Check if CSVs are older than a week, update repos.txt timestamp if needed
 check-week-old:
 	@echo "Checking if any CSV is newer than a week..."
 	@$(SCRIPTS_DIR)/weekly-update.sh
+
+# Process all files
+process-all: csv-files md-files graphs
 
 # CSV files generation
 csv-files: $(CSV_FILES)
@@ -44,12 +49,6 @@ data/%.csv: repos.txt $(SCRIPTS_DIR)/stats.sh
 	@mkdir -p $(DATA_DIR)
 	@echo "Generating CSV for $*..."
 	@$(SCRIPTS_DIR)/stats.sh $(filter %/$*.git,$(REPOS))
-
-# Rule to generate markdown file for each repository
-data/%/index.md: data/%.csv $(SCRIPTS_DIR)/generate_md.sh
-	@mkdir -p data/$*
-	@echo "Generating markdown for $*..."
-	@$(SCRIPTS_DIR)/generate_md.sh $< > $@
 
 # Rule to generate graph files
 data/%/commits.svg data/%/lines.svg: data/%.csv $(SCRIPTS_DIR)/graphs.sh
@@ -70,4 +69,4 @@ list-repos:
 	@echo "Available repositories:"
 	@for repo in $(REPO_NAMES); do echo "  - $$repo"; done
 
-.PHONY: all process-all weekly update-mtimes check-week-old csv-files md-files graphs clean clean-docs list-repos
+.PHONY: all process-all weekly update-mtimes check-week-old csv-files md-files graphs index clean clean-docs list-repos

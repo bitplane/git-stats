@@ -1,8 +1,8 @@
 #!/bin/bash
-# update-mtimes.sh
+# mtime.sh
 # Updates the modification time of each file to match its last commit time
 # Skips files with uncommitted changes
-# Usage: ./update-mtimes.sh [directory]
+# Usage: ./mtime.sh [directory]
 
 set -euo pipefail
 
