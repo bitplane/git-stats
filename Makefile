@@ -25,12 +25,12 @@ index: $(CSV_FILES)
 # Update file modification times to match git history
 update-mtimes:
 	@echo "Updating file modification times from git history..."
-	@$(SCRIPTS_DIR)/mtime.sh
+	$(SCRIPTS_DIR)/mtime.sh
 
 # Check if CSVs are older than a week, update repos.txt timestamp if needed
 check-week-old:
 	@echo "Checking if any CSV is newer than a week..."
-	@$(SCRIPTS_DIR)/weekly-update.sh
+	$(SCRIPTS_DIR)/weekly-update.sh
 
 # Process all files
 process-all: csv-files md-files graphs

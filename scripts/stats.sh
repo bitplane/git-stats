@@ -1,13 +1,4 @@
 #!/bin/bash
-# stats.sh - Collect git commit stats from a repo and append them to a CSV file.
-# Usage: ./stats.sh <git-remote-url>
-#
-# Requirements:
-#   - The repo is stored in ./.cache/<repo-name>
-#   - The output CSV will be written to ./data/<repo-name>.csv
-#   - A log file of git log output is kept in the cache directory (not in /tmp)
-#   - If the CSV's last date is empty, we default to 0001-01-01T00:00:00.
-#   - New commits (since the last date) are processed and appended without duplicate days.
 
 set -euo pipefail
 
@@ -92,6 +83,21 @@ if [ ! -s "$LOG_FILE" ]; then
   exit 0
 fi
 
+# If that approach doesn't work, try an alternative method to capture emails
+if ! grep -q "@" "$LOG_FILE"; then
+  echo "Email addresses not found in log, trying alternative method..."
+  rm "$LOG_FILE"
+  git log --since="$LAST_DATE" --format="%H" > "$TMP_DIR/commit_hashes.txt"
+  
+  while read -r hash; do
+    echo "COMMIT_START" >> "$LOG_FILE"
+    git show --date=iso --format="%ad" "$hash" | head -n1 >> "$LOG_FILE"
+    git show --format="%ae" "$hash" | head -n1 >> "$LOG_FILE"
+    git show --numstat "$hash" | tail -n +5 >> "$LOG_FILE"
+    echo "" >> "$LOG_FILE"  # Add blank line
+  done < "$TMP_DIR/commit_hashes.txt"
+fi
+
 popd > /dev/null
 
 echo "Aggregating commit stats by day..."
@@ -113,6 +119,8 @@ if command -v parallel > /dev/null 2>&1; then
       files = 0; 
       added = 0; 
       deleted = 0;
+      email = "";
+      org = "";
     }
     
     /^COMMIT_START/ { in_commit=1; next }
@@ -120,7 +128,40 @@ if command -v parallel > /dev/null 2>&1; then
     in_commit && /^[0-9]{4}-[0-9]{2}-[0-9]{2}/ {
       # Extract just the date part
       commit_date = substr($0, 1, 10);
-      in_commit = 0;
+      in_commit = 2;  # Move to the next state, expecting email
+      next;
+    }
+    
+    in_commit == 2 && /@/ {
+      # Extract organization from email
+      email = $0;
+      # Extract domain part
+      split(email, parts, "@");
+      if (parts[2] != "") {
+        # Split domain by periods
+        split(parts[2], domainparts, ".");
+        
+        # Handle domain.tld, domain.co.uk, etc.
+        if (domainparts[1] == "gmail" || domainparts[1] == "hotmail" || 
+            domainparts[1] == "yahoo" || domainparts[1] == "outlook" || 
+            domainparts[1] == "aol" || domainparts[1] == "protonmail" || 
+            domainparts[1] == "mail") {
+          # Generic email provider, try to use username part
+          org = parts[1];
+        } else if (domainparts[2] == "ac" || domainparts[2] == "edu") {
+          # University - use the university name
+          org = domainparts[1];
+        } else if (domainparts[2] == "co" || domainparts[2] == "com" || 
+                   domainparts[2] == "org" || domainparts[2] == "net" || 
+                   domainparts[2] == "io" || domainparts[2] == "dev") {
+          # Commercial/organization - use the main domain
+          org = domainparts[1];
+        } else {
+          # Default case - just use first part of domain
+          org = domainparts[1];
+        }
+      }
+      in_commit = 0;  # Done with the commit header
       next;
     }
     
@@ -137,14 +178,16 @@ if command -v parallel > /dev/null 2>&1; then
       if (commit_date != "") {
         # Ensure we are not processing future dates
         if (commit_date <= "'"$TODAY"'") {
-          # Output stats for this commit: date,1,author,added,deleted,files
-          print commit_date ",1,," added "," deleted "," files;
+          # Output stats for this commit: date,1,org,added,deleted,files
+          print commit_date ",1," org "," added "," deleted "," files;
         }
         # Reset counters for next commit
         commit_date = "";
         files = 0;
         added = 0;
         deleted = 0;
+        email = "";
+        org = "";
       }
     }
     ' "$chunk_file" > "$chunk_output"
@@ -159,18 +202,35 @@ if command -v parallel > /dev/null 2>&1; then
   {
     date=$1;
     commits=$2;
+    org=$3;
     added=$4;
     deleted=$5;
     files=$6;
     
     dates[date] += commits;
+    # Track organizations with counts
+    if (org != "") {
+      orgcount[date,org]++;
+    }
     adds[date] += added;
     dels[date] += deleted;
     fs[date] += files;
   }
   END {
     for (date in dates) {
-      print date, dates[date], "", adds[date], dels[date], fs[date];
+      # Format organizations as "org1:count1|org2:count2|..."
+      org_list = "";
+      for (orgname in orgcount) {
+        split(orgname, parts, SUBSEP);
+        if (parts[1] == date) {
+          if (org_list == "") {
+            org_list = parts[2] ":" orgcount[orgname];
+          } else {
+            org_list = org_list "|" parts[2] ":" orgcount[orgname];
+          }
+        }
+      }
+      print date, dates[date], org_list, adds[date], dels[date], fs[date];
     }
   }
   ' | sort > "$TMP_DIR/daily_stats.csv"
@@ -245,7 +305,7 @@ if [ -n "$NEW_STATS" ]; then
     {
       grep -vf "$TMP_DIR/new_dates.txt" "$CSV_FILE" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' | while IFS= read -r line; do
         line_date=$(echo "$line" | cut -d, -f1)
-        if [ "$line_date" <= "$TODAY" ]; then
+        if [ "$line_date" \<= "$TODAY" ]; then
           echo "$line"
         else
           echo "Removing future date from CSV: $line_date" >&2
