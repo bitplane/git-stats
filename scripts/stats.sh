@@ -1,14 +1,12 @@
 #!/bin/bash -x
-# scripts/stats.sh
 # Usage: ./stats.sh <repo-url>
 #  Clones/updates the repo in .cache/, extracts daily stats, merges into CSV
 
 set -eo pipefail
 
 SCRIPT_DIR="$(dirname "$0")"
-source "${SCRIPT_DIR}/repo.sh"
+source "${SCRIPT_DIR}/_repo.sh"
 source "${SCRIPT_DIR}/_utils.sh"
-source "${SCRIPT_DIR}/process.sh"
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 <repo-url>"
@@ -33,11 +31,7 @@ echo "Processing commits since $last_date for $repo_name"
 # Clone or update
 repo_dir="$(clone_or_update_repo "$repo_url" "$cache_dir")"
 
-# Extract raw git log (since last_date), pipe to daily aggregator
-extract_log "$repo_dir" "$last_date" | process_log_data > "$temp_stats"
+# Extract raw git log (since last_date), process with Python script
+extract_log "$repo_dir" "$last_date" | python3 "${SCRIPT_DIR}/process.py" "$csv_file"
 
-# Merge into final CSV
-update_csv "$csv_file" "$temp_stats"
-
-rm -f "$temp_stats"
 echo "Stats updated for $repo_name"
