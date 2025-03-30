@@ -1,0 +1,15 @@
+https://github.com/torvalds/linux.git
+https://github.com/python/cpython.git
+https://github.com/microsoft/vscode.git
+https://github.com/chromium/chromium.git
+https://github.com/mozilla/gecko-dev.git
+https://github.com/tensorflow/tensorflow.git
+https://github.com/llvm/llvm-project.git
+https://github.com/git/git.git
+https://github.com/nodejs/node.git
+https://github.com/rust-lang/rust.git
+https://github.com/golang/go.git
+https://github.com/systemd/systemd.git
+https://github.com/openssl/openssl.git
+https://github.com/docker/cli.git
+https://github.com/kubernetes/kubernetes.git
