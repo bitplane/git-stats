@@ -1,1 +1,3 @@
 .cache
+*.svg
+data/*.md
