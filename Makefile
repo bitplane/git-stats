@@ -1,70 +1,92 @@
-# Extract repository list (skipping comments and empty lines)
+# Makefile
+# ----------------------------------------------------------------------------
+# "make" will:
+#   1) update-mtimes  -> adjusts file times to last commit
+#   2) process-all    -> generates CSV, MD files, graphs
+#   3) index          -> builds data/index.md
+#
+# Repos are listed in repos.txt, ignoring comments or blank lines.
+# For each, we produce data/<repo_name>.csv and data/<repo_name>/*.md, *.svg
+# ----------------------------------------------------------------------------
+
 REPOS       = $(shell grep -v "^#" repos.txt | grep -v "^$$")
 REPO_NAMES  = $(notdir $(basename $(REPOS)))
 CSV_FILES   = $(patsubst %,data/%.csv,$(REPO_NAMES))
 MD_FILES    = $(patsubst %,data/%/index.md,$(REPO_NAMES))
 GRAPH_FILES = $(patsubst %,data/%/commits.svg data/%/lines.svg,$(REPO_NAMES))
 
-# Directories
 SCRIPTS_DIR = scripts
 DATA_DIR    = data
 
-# Default target - first update mtimes, then process files
+# Default target - run everything
 all: update-mtimes process-all index
 
-# Weekly update target - only run if CSVs are older than a week
+# Weekly target - only runs if CSVs are older than a week
 weekly: update-mtimes check-week-old process-all index
 
-# Generate main index file
+# Generate main index from existing CSVs
 index: $(CSV_FILES)
 	@echo "Generating main index..."
 	@$(SCRIPTS_DIR)/index.sh > $(DATA_DIR)/index.md
 
-# Update file modification times to match git history
+# 1) Update file modification times per local repo .git
 update-mtimes:
 	@echo "Updating file modification times from git history..."
 	$(SCRIPTS_DIR)/mtime.sh
 
-# Check if CSVs are older than a week, update repos.txt timestamp if needed
+# 2) Check if CSVs are older than a week (updates repos.txt mtime if so)
 check-week-old:
 	@echo "Checking if any CSV is newer than a week..."
 	$(SCRIPTS_DIR)/weekly-update.sh
 
-# Process all files
+# 3) Process all = build CSV, MD, and Graphs
 process-all: csv-files md-files graphs
 
-# CSV files generation
+# 3a) Generate CSV
 csv-files: $(CSV_FILES)
 
-# Markdown files generation
+# 3b) Generate per-repo Markdown
 md-files: $(MD_FILES)
 
-# Graph generation
+# 3c) Generate graphs
 graphs: $(GRAPH_FILES)
 
-# Rule to generate CSV for each repository
+# ----------------------------------------------------------------------------
+# RULE: build data/%.csv by running stats.sh on matching repo
+# ----------------------------------------------------------------------------
 data/%.csv: repos.txt $(SCRIPTS_DIR)/stats.sh
 	@mkdir -p $(DATA_DIR)
 	@echo "Generating CSV for $*..."
-	@$(SCRIPTS_DIR)/stats.sh $(filter %/$*.git,$(REPOS))
+	@repo_url=$$(grep -E "/$*.git$$" repos.txt); \
+	 if [ -z "$$repo_url" ]; then \
+	   echo "❌ Repo $* not found in repos.txt" >&2; \
+	   exit 1; \
+	 fi; \
+	 $(SCRIPTS_DIR)/stats.sh "$$repo_url"
 
-# Rule to generate graph files
+# RULE: build data/%/commits.svg and data/%/lines.svg from data/%.csv
 data/%/commits.svg data/%/lines.svg: data/%.csv $(SCRIPTS_DIR)/graphs.sh
 	@mkdir -p data/$*
 	@echo "Generating graphs for $*..."
 	@$(SCRIPTS_DIR)/graphs.sh $< data/$*
 
-# Clean all generated files
+# ----------------------------------------------------------------------------
+# Markdown "docs" generation
+data/%/index.md: data/%.csv $(SCRIPTS_DIR)/markdown.sh
+	@mkdir -p data/$*
+	@echo "Building markdown for $*..."
+	@$(SCRIPTS_DIR)/markdown.sh $< > data/$*/index.md
+
+# ----------------------------------------------------------------------------
+# Cleanup targets
 clean:
 	rm -rf $(DATA_DIR)
 
-# Clean just the markdown and graph files, keeping CSVs
 clean-docs:
 	rm -f $(MD_FILES) $(GRAPH_FILES)
 
-# Show available repos
 list-repos:
 	@echo "Available repositories:"
-	@for repo in $(REPO_NAMES); do echo "  - $$repo"; done
+	@for r in $(REPO_NAMES); do echo "  - $$r"; done
 
-.PHONY: all process-all weekly update-mtimes check-week-old csv-files md-files graphs index clean clean-docs list-repos
+.PHONY: all weekly update-mtimes check-week-old process-all csv-files md-files graphs index clean clean-docs list-repos

@@ -1,31 +1,26 @@
 #!/bin/bash
-# index.sh
-# Generates main index.md with links to all repository stats
-# Usage: ./index.sh > data/index.md
+# scripts/index.sh
+# Generates data/index.md listing each repo's stats
 
 set -euo pipefail
 
 DATA_DIR="data"
 
-# Check if data directory exists
 if [ ! -d "$DATA_DIR" ]; then
-  echo "Error: Data directory not found."
+  echo "Error: data/ directory not found."
   exit 1
 fi
 
-# Find all CSV files
 CSV_FILES=$(find "$DATA_DIR" -maxdepth 1 -name "*.csv" | sort)
-
 if [ -z "$CSV_FILES" ]; then
-  echo "Error: No CSV files found in $DATA_DIR."
+  echo "Error: No CSVs found in data/"
   exit 1
 fi
 
-# Generate the index markdown content
-cat << EOF
+cat <<EOF
 # Repository Statistics
 
-This page provides links to statistics for various open source repositories.
+This page provides links to statistics for various open source repos.
 
 ## Repositories
 
@@ -33,51 +28,30 @@ This page provides links to statistics for various open source repositories.
 |------------|---------|-------------|---------------|--------------|
 EOF
 
-# Process each CSV file
-for csv_file in $CSV_FILES; do
-  repo_name=$(basename "$csv_file" .csv)
-  
-  # Skip first line if it's a header
-  if head -n 1 "$csv_file" | grep -q "date,commits"; then
-    has_header=true
+for csv in $CSV_FILES; do
+  repo_name=$(basename "$csv" .csv)
+  # Check if there's a header
+  if head -1 "$csv" | grep -q '^date,commits'; then
+    total_commits=$(awk -F, 'NR>1 {sum+=$2} END{print sum}' "$csv")
+    total_added=$(awk -F, 'NR>1 {sum+=$4} END{print sum}' "$csv")
+    total_deleted=$(awk -F, 'NR>1 {sum+=$5} END{print sum}' "$csv")
+    first_date=$(awk -F, 'NR>1{print $1}' "$csv" | sort | head -1)
+    last_date=$(awk -F, 'NR>1{print $1}' "$csv" | sort | tail -1)
   else
-    has_header=false
+    # no header
+    total_commits=$(awk -F, '{sum+=$2} END{print sum}' "$csv")
+    total_added=$(awk -F, '{sum+=$4} END{print sum}' "$csv")
+    total_deleted=$(awk -F, '{sum+=$5} END{print sum}' "$csv")
+    first_date=$(awk -F, '{print $1}' "$csv" | sort | head -1)
+    last_date=$(awk -F, '{print $1}' "$csv" | sort | tail -1)
   fi
-  
-  # Extract stats
-  if [ "$has_header" = true ]; then
-    total_commits=$(awk -F, 'NR>1 {sum+=$2} END {print sum}' "$csv_file")
-    total_lines_added=$(awk -F, 'NR>1 {sum+=$4} END {print sum}' "$csv_file")
-    total_lines_deleted=$(awk -F, 'NR>1 {sum+=$5} END {print sum}' "$csv_file")
-    first_date=$(awk -F, 'NR>1 {print $1}' "$csv_file" | sort | head -n 1)
-    last_date=$(awk -F, 'NR>1 {print $1}' "$csv_file" | sort | tail -n 1)
-  else
-    total_commits=$(awk -F, '{sum+=$2} END {print sum}' "$csv_file")
-    total_lines_added=$(awk -F, '{sum+=$4} END {print sum}' "$csv_file")
-    total_lines_deleted=$(awk -F, '{sum+=$5} END {print sum}' "$csv_file")
-    first_date=$(awk -F, '{print $1}' "$csv_file" | sort | head -n 1)
-    last_date=$(awk -F, '{print $1}' "$csv_file" | sort | tail -n 1)
-  fi
-  
-  # Format the active period
-  active_period="${first_date} to ${last_date}"
-  
-  # Write the table row with link to detailed stats
-  echo "| [${repo_name}](./${repo_name}/index.md) | ${total_commits} | ${total_lines_added} | ${total_lines_deleted} | ${active_period} |"
+
+  echo "| [${repo_name}](./${repo_name}/index.md) | ${total_commits} | ${total_added} | ${total_deleted} | ${first_date} to ${last_date} |"
 done
 
-cat << EOF
+cat <<EOF
 
 ## Recent Updates
 
 Last updated: $(date +"%Y-%m-%d")
-
-## Visualization 
-
-For each repository, you can view:
-- Commit activity over time
-- Lines of code added and removed
-- Contributing organizations
-
-Click on a repository name in the table above to see detailed statistics.
 EOF
