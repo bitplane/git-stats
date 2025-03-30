@@ -6,8 +6,6 @@
 #
 # This version includes the author email in each "COMMIT" line.
 
-set -eo pipefail
-
 clone_or_update_repo() {
   local repo_url="$1"
   local cache_dir="$2"
@@ -18,12 +16,12 @@ clone_or_update_repo() {
   local repo_path="${cache_dir}/${repo_name}"
 
   if [ -d "$repo_path/.git" ]; then
-    echo "Updating existing clone in $repo_path" >&2
-    git -C "$repo_path" fetch --all --tags --prune
-    git -C "$repo_path" pull --rebase
+    echo "Updating existing clone in $repo_path"   >&2
+    git -C "$repo_path" fetch --all --tags --prune >&2
+    git -C "$repo_path" pull --rebase              >&2
   else
-    echo "Cloning $repo_url into $repo_path" >&2
-    git clone "$repo_url" "$repo_path"
+    echo "Cloning $repo_url into $repo_path"       >&2
+    git clone "$repo_url" "$repo_path"             >&2
   fi
 
   # Echo just the path to stdout, for stats.sh to capture
@@ -32,7 +30,7 @@ clone_or_update_repo() {
 
 extract_log() {
   local repo_dir="$1"
-  local since_date="${2:-2025-01-01}"
+  local since_date="${2:-0001-01-01}"
 
   echo "Extracting log since $since_date from $repo_dir" >&2
   cd "$repo_dir" || return 1

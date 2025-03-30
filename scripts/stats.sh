@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # scripts/stats.sh
 # Usage: ./stats.sh <repo-url>
 #  Clones/updates the repo in .cache/, extracts daily stats, merges into CSV
