@@ -1,15 +1,13 @@
-# Makefile for repository statistics
-
 # Extract repository list (skipping comments and empty lines)
-REPOS = $(shell grep -v "^#" repos.txt | grep -v "^$$")
-REPO_NAMES = $(notdir $(basename $(REPOS)))
-CSV_FILES = $(patsubst %,data/%.csv,$(REPO_NAMES))
-MD_FILES = $(patsubst %,data/%/index.md,$(REPO_NAMES))
+REPOS       = $(shell grep -v "^#" repos.txt | grep -v "^$$")
+REPO_NAMES  = $(notdir $(basename $(REPOS)))
+CSV_FILES   = $(patsubst %,data/%.csv,$(REPO_NAMES))
+MD_FILES    = $(patsubst %,data/%/index.md,$(REPO_NAMES))
 GRAPH_FILES = $(patsubst %,data/%/commits.svg data/%/lines.svg,$(REPO_NAMES))
 
 # Directories
 SCRIPTS_DIR = scripts
-DATA_DIR = data
+DATA_DIR    = data
 
 # Default target - first update mtimes, then process files
 all: update-mtimes process-all index
