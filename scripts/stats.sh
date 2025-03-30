@@ -245,7 +245,7 @@ if [ -n "$NEW_STATS" ]; then
     {
       grep -vf "$TMP_DIR/new_dates.txt" "$CSV_FILE" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' | while IFS= read -r line; do
         line_date=$(echo "$line" | cut -d, -f1)
-        if [ "$line_date" \<= "$TODAY" ]; then
+        if [ "$line_date" <= "$TODAY" ]; then
           echo "$line"
         else
           echo "Removing future date from CSV: $line_date" >&2
