@@ -1,6 +1,6 @@
+https://github.com/microsoft/vscode.git
 https://github.com/torvalds/linux.git
 https://github.com/python/cpython.git
-https://github.com/microsoft/vscode.git
 https://github.com/chromium/chromium.git
 https://github.com/mozilla/gecko-dev.git
 https://github.com/tensorflow/tensorflow.git
