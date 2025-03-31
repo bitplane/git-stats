@@ -2,7 +2,7 @@
 # scripts/_repo.sh
 # Provides two functions used by stats.sh:
 #   1) clone_or_update_repo <repo-url> <cache-dir>
-#   2) extract_log          <repo-dir>  <since>
+#   2) extract_log          <repo-dir>  <hash>
 
 clone_or_update_repo() {
   local repo_url="$1"
@@ -43,7 +43,7 @@ clone_or_update_repo() {
 
 extract_log() {
   local repo_dir="$1"
-  local since="$2"  # Will be a commit hash or empty
+  local since_hash="$2"  # Will be a commit hash or empty
 
   cd "$repo_dir" 2>&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
 
@@ -52,20 +52,12 @@ extract_log() {
   log_file="$(pwd).log"
 
   # Check if we have a since parameter
-  local log_cmd
-  if [ -n "$since" ]; then
-    echo "Extracting log since commit $since" >&2
-    log_cmd="git log $since..HEAD"
+  if [ -n "$since_hash" ]; then
+    echo "Extracting log since commit $since_hash" >&2
+    # Use log command that starts from a specific commit
+    git log "$since_hash..HEAD" --date=short --pretty="tformat:COMMIT %H %ad %aE" --numstat --reverse | tee "$log_file"
   else
     echo "Extracting entire log history" >&2
-    log_cmd="git log --all"
+    git log --all --date=short --pretty="tformat:COMMIT %H %ad %aE" --numstat --reverse | tee "$log_file"
   fi
-
-  # Execute the log command
-  eval "$log_cmd" \
-    --date=short \
-    --pretty='tformat:COMMIT %H %ad %aE' \
-    --numstat \
-    --reverse | \
-  tee "$log_file"
 }

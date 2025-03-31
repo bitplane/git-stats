@@ -42,185 +42,16 @@ def get_org(email):
     except (IndexError, AttributeError):
         return 'unknown'
 
+
 def is_commit_line(line):
     """Check if line is a commit line."""
     return line.startswith('COMMIT')
+
 
 def is_file_line(line):
     """Check if line is a file stats line."""
     return '\t' in line
 
-def remove_last_line(filename):
-    """Remove the last line from a CSV file."""
-    if not os.path.exists(filename):
-        return
-
-    # Read all lines except the last
-    with open(filename, 'r') as f:
-        lines = f.readlines()
-    
-    if not lines:
-        return
-
-    # Write all lines except the last
-    with open(filename, 'w') as f:
-        f.writelines(lines[:-1])
-
-def commit_stats_generator():
-    """
-    Generator that yields commit statistics from stdin.
-    Collects all stats and yields them sorted by date at the end.
-    """
-    # Use defaultdict to accumulate stats across commits on the same date
-    stats_by_date = defaultdict(lambda: {
-        'commits': 0,
-        'lines_added': 0,
-        'lines_deleted': 0,
-        'files_changed': 0,
-        'contributors': 0,
-        'orgs': defaultdict(int)
-    })
-
-    current_date = None
-    current_month = None
-    
-    for line in sys.stdin:
-        line = line.strip()
-
-        # Commit line
-        if is_commit_line(line):
-            # Parse new commit
-            parts = line.split()
-            if len(parts) < 3:
-                print(f"Warning: Malformed commit line: {line}", file=sys.stderr)
-                continue
-
-            # Parsing commit details
-            _, commit_hash, date = parts[:3]
-            author = parts[3] if len(parts) > 3 else "unknown@unknown.com"
-            
-            # Check if we've moved to a new month
-            month = date[:7]  # Extract YYYY-MM portion
-            if month != current_month:
-                if current_month is not None:
-                    print(f"Processing month: {month}", file=sys.stderr)
-                current_month = month
-            
-            # Update current date
-            current_date = date
-            
-            # Update commit count and contributor count
-            stats_by_date[current_date]['commits'] += 1
-            stats_by_date[current_date]['contributors'] += 1
-            
-            # Update org stats
-            author_org = get_org(author)
-            stats_by_date[current_date]['orgs'][author_org] += 1
-
-        # File stats line
-        elif current_date and is_file_line(line):
-            try:
-                added, deleted, filename = line.split('\t')
-                # Convert '-' to 0 for binary files
-                added_lines = int(added) if added != '-' else 0
-                deleted_lines = int(deleted) if deleted != '-' else 0
-                
-                stats_by_date[current_date]['lines_added'] += added_lines
-                stats_by_date[current_date]['lines_deleted'] += deleted_lines
-                stats_by_date[current_date]['files_changed'] += 1
-            except (ValueError, TypeError) as e:
-                print(f"Warning: Malformed file stats line: {line} ({e})", file=sys.stderr)
-
-    # Process all dates in chronological order
-    print(f"Processing complete. Yielding {len(stats_by_date)} dates in chronological order...", file=sys.stderr)
-    for date in sorted(stats_by_date.keys()):
-        stats = stats_by_date[date]
-        # Format orgs as "org1:count|org2:count|..."
-        orgs_formatted = '|'.join(f"{org}:{count}" for org, count in stats['orgs'].items())
-        
-        yield {
-            'date': date,
-            'commits': stats['commits'],
-            'orgs': orgs_formatted,
-            'lines_added': stats['lines_added'],
-            'lines_deleted': stats['lines_deleted'],
-            'files_changed': stats['files_changed'],
-            'contributors': stats['contributors']
-        }# Parse new commit
-            parts = line.split()
-            if len(parts) < 3:
-                print(f"Warning: Malformed commit line: {line}", file=sys.stderr)
-                continue
-
-            # Parsing commit details
-            _, commit_hash, date = parts[:3]
-            author = parts[3] if len(parts) > 3 else "unknown@unknown.com"
-            
-            # Check if we've moved to a new month
-            month = date[:7]  # Extract YYYY-MM portion
-            if month != current_month:
-                if current_month is not None:
-                    print(f"Processing month: {month}", file=sys.stderr)
-                current_month = month
-            
-            # Check if we're moving to a new date
-            if current_date is not None and current_date != date:
-                # Yield the completed day before moving to the next
-                stats = stats_by_date[current_date]
-                # Format orgs as "org1:count|org2:count|..."
-                orgs_formatted = '|'.join(f"{org}:{count}" for org, count in stats['orgs'].items())
-                
-                yield {
-                    'date': current_date,
-                    'commits': stats['commits'],
-                    'orgs': orgs_formatted,
-                    'lines_added': stats['lines_added'],
-                    'lines_deleted': stats['lines_deleted'],
-                    'files_changed': stats['files_changed'],
-                    'contributors': stats['contributors']
-                }
-                # Remove yielded date from the dict to save memory
-                del stats_by_date[current_date]
-            
-            # Update current date
-            current_date = date
-            
-            # Update commit count and contributor count
-            stats_by_date[current_date]['commits'] += 1
-            stats_by_date[current_date]['contributors'] += 1
-            
-            # Update org stats
-            author_org = get_org(author)
-            stats_by_date[current_date]['orgs'][author_org] += 1
-
-        # File stats line
-        elif current_date and is_file_line(line):
-            try:
-                added, deleted, filename = line.split('\t')
-                # Convert '-' to 0 for binary files
-                added_lines = int(added) if added != '-' else 0
-                deleted_lines = int(deleted) if deleted != '-' else 0
-                
-                stats_by_date[current_date]['lines_added'] += added_lines
-                stats_by_date[current_date]['lines_deleted'] += deleted_lines
-                stats_by_date[current_date]['files_changed'] += 1
-            except (ValueError, TypeError) as e:
-                print(f"Warning: Malformed file stats line: {line} ({e})", file=sys.stderr)
-
-    # Yield any remaining stats
-    for date, stats in sorted(stats_by_date.items()):
-        # Format orgs as "org1:count|org2:count|..."
-        orgs_formatted = '|'.join(f"{org}:{count}" for org, count in stats['orgs'].items())
-        
-        yield {
-            'date': date,
-            'commits': stats['commits'],
-            'orgs': orgs_formatted,
-            'lines_added': stats['lines_added'],
-            'lines_deleted': stats['lines_deleted'],
-            'files_changed': stats['files_changed'],
-            'contributors': stats['contributors']
-        }
 
 def main():
     if len(sys.argv) < 2:
@@ -228,7 +59,8 @@ def main():
         sys.exit(1)
 
     output_csv = sys.argv[1]
-    cache_dir = os.path.dirname(os.path.dirname(output_csv)) + "/.cache"
+    # Use a relative path for cache_dir - don't try to use absolute paths
+    cache_dir = ".cache"
     
     # Extract repo name from output path
     repo_name = os.path.basename(output_csv).replace('.csv', '')
@@ -307,7 +139,6 @@ def main():
                 
                 # Check if we've moved to a new month
                 month = date[:7]  # Extract YYYY-MM portion
-                print(f"Processing: {date} ({current_org})", file=sys.stderr)
             
             # File stats line
             elif current_hash and is_file_line(line):
@@ -431,6 +262,7 @@ def main():
     
     # Optional cleanup
     # os.remove(temp_csv)
+
 
 if __name__ == '__main__':
     main()
