@@ -10,23 +10,24 @@ clone_or_update_repo() {
   local repo_name=$(basename "${repo_url%.git}")
   local repo_path="${cache_dir}/${repo_name}"
   local latest_file="data/${repo_name}.latest"
+  local csv_file="data/${repo_name}.csv"
 
   mkdir -p "$cache_dir" >&2
 
   if [ -d "$repo_path" ]; then
     cd "$repo_path" >&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
-    git fetch --all --tags >&2
+    git fetch --tags --filter=blobs:none >&2
   else
-    if [ -f "$latest_file" ]; then
-      local file_date=$(date -r "$latest_file" +%Y-%m-%d 2>/dev/null)
-      if [ -n "$file_date" ]; then
-        local shallow_date=$(date -d "$file_date - 3 days" +%Y-%m-%d 2>/dev/null || echo "$file_date")
-        git clone --bare --shallow-since="$shallow_date" "$repo_url" "$repo_path" >&2
-      else
-        git clone --bare "$repo_url" "$repo_path" >&2
-      fi
+    # Get the last date from CSV using the Python script
+    if [ -f "$csv_file" ]; then
+      local shallow_date=$(python3 scripts/get_last_date.py "$csv_file" "$(date -d "-30 days" +%Y-%m-%d)")
+      echo "Using shallow-since=$shallow_date from CSV history" >&2
+      git clone --bare --filter=blob:none --shallow-since="$shallow_date" "$repo_url" "$repo_path" >&2
     else
-      git clone --bare "$repo_url" "$repo_path" >&2
+      # No CSV exists yet, use 30 days as fallback
+      local shallow_date=$(date -d "-30 days" +%Y-%m-%d)
+      echo "No CSV history found, using shallow-since=$shallow_date" >&2
+      git clone --bare --filter=blob:none --shallow-since="$shallow_date" "$repo_url" "$repo_path" >&2
     fi
     cd "$repo_path" >&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
   fi
@@ -41,7 +42,14 @@ extract_log() {
   cd "$repo_dir" >&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
 
   if [ -n "$since_hash" ]; then
-    git log "$since_hash..HEAD" --date=short --pretty="tformat:COMMIT %H %ad %aE" --numstat --reverse
+    # Try to use the specified hash range
+    if git cat-file -e "$since_hash" 2>/dev/null; then
+      git log "$since_hash..HEAD" --date=short --pretty="tformat:COMMIT %H %ad %aE" --numstat --reverse
+    else
+      echo "Warning: Commit $since_hash not found in shallow clone" >&2
+      echo "Falling back to all available history" >&2
+      git log --date=short --pretty="tformat:COMMIT %H %ad %aE" --numstat --reverse
+    fi
   else
     git log --all --date=short --pretty="tformat:COMMIT %H %ad %aE" --numstat --reverse
   fi
