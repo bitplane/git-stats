@@ -1,180 +1,158 @@
-def parse_git_log(log_lines):
-    """
-    Parse git log input and aggregate daily statistics.
-    
-    Input format expected:
-    COMMIT <hash> <YYYY-MM-DD> <author-email>
-    <added>\t<deleted>\t<filename>
-    ...
-    COMMIT <hash> <YYYY-MM-DD> <author-email>
-    ...
-    """
-    daily_stats = defaultdict(lambda: {
-        'commits': 0,
-        'lines_added': 0,
-        'lines_deleted': 0,
-        'files_changed': 0,
-        'contributors': set(),
-        'orgs': defaultdict(int)
-    })
-    
-    current_date = None
-    current_author = None
-    
-    for line in log_lines:
-        line = line.strip()
-        
-        # Commit line
-        if line.startswith('COMMIT'):
-            # Split carefully to handle potential spaces in email
-            parts = line.split(' ', 3)
-            if len(parts) < 4:
-                print(f"Warning: Unexpected commit line format: {line}", file=sys.stderr)
-                continue
-            
-            _, hash_val, date, author = parts
-            current_date = date
-            current_author = author
-            
-            # Extract domain from email
-            try:
-                _, domain = author.split('@')
-            except (ValueError, IndexError):
-                domain = 'unknown'
-            
-            # Update daily stats
-            day_stats = daily_stats[current_date]
-            day_stats['commits'] += 1
-            day_stats['contributors'].add(current_author)
-            day_stats['orgs'][domain] += 1
-        
-        # Numstat line (added\tdeleted\tfilename)
-        elif '\t' in line:
-            try:
-                added, deleted, _ = line.split('\t')
-                added = int(added)
-                deleted = int(deleted)
-                
-                day_stats = daily_stats[current_date]
-                day_stats['lines_added'] += added
-                day_stats['lines_deleted'] += deleted
-                day_stats['files_changed'] += 1
-            except (ValueError, TypeError):
-                # Skip malformed lines
-                continue
-    
-    # Convert set of contributors to count
-    for day_data in daily_stats.values():
-        day_data['contributors'] = len(day_data['contributors'])
-        
-        # Convert orgs to formatted string
-        orgs = '|'.join(f"{org}:{count}" for org, count in day_data['orgs'].items())
-        day_data['orgs'] = orgs
-    
-    return daily_stats#!/usr/bin/env python3
+#!/usr/bin/env python3
 import sys
 import csv
+import os
 from collections import defaultdict
-from datetime import datetime
-import email.utils
 
-def parse_git_log(log_lines):
+def get_org(email):
+    """Extract organization name from email address.
+    Example: whoever@microsoft.com -> microsoft
     """
-    Parse git log input and aggregate daily statistics.
+    try:
+        # Get the domain part after @
+        domain = email.split('@')[1]
+        # Return just the first part of the domain (before first .)
+        return domain.split('.')[0]
+    except (IndexError, AttributeError):
+        return 'unknown'
+
+def is_commit_line(line):
+    """Check if line is a commit line."""
+    return line.startswith('COMMIT')
+
+def is_file_line(line):
+    """Check if line is a file stats line."""
+    return '\t' in line
+
+def remove_last_line(filename):
+    """Remove the last line from a CSV file."""
+    if not os.path.exists(filename):
+        return
+
+    # Read all lines except the last
+    with open(filename, 'r') as f:
+        lines = f.readlines()
     
-    Input format expected:
-    COMMIT <hash> <YYYY-MM-DD> <author-email>
-    <added>\t<deleted>\t<filename>
-    ...
-    COMMIT <hash> <YYYY-MM-DD> <author-email>
-    ...
+    if not lines:
+        return
+
+    # Write all lines except the last
+    with open(filename, 'w') as f:
+        f.writelines(lines[:-1])
+
+def commit_stats_generator():
     """
-    daily_stats = defaultdict(lambda: {
-        'commits': 0,
+    Generator that yields commit statistics from stdin.
+    """
+    # Use defaultdict to accumulate stats across commits on the same date
+    current_stats = defaultdict(lambda: {
         'lines_added': 0,
         'lines_deleted': 0,
         'files_changed': 0,
-        'contributors': set(),
         'orgs': defaultdict(int)
     })
-    
-    current_date = None
-    current_author = None
-    
-    for line in log_lines:
-        line = line.strip()
-        
-        # Commit line
-        if line.startswith('COMMIT'):
-            _, _, date, author = line.split(' ', 3)
-            current_date = date
-            current_author = author
-            
-            # Extract domain from email
-            try:
-                _, domain = email.utils.parseaddr(author)[1].split('@')
-            except (ValueError, IndexError):
-                domain = 'unknown'
-            
-            # Update daily stats
-            day_stats = daily_stats[current_date]
-            day_stats['commits'] += 1
-            day_stats['contributors'].add(current_author)
-            day_stats['orgs'][domain] += 1
-        
-        # Numstat line (added\tdeleted\tfilename)
-        elif '\t' in line:
-            try:
-                added, deleted, _ = line.split('\t')
-                added = int(added)
-                deleted = int(deleted)
-                
-                day_stats = daily_stats[current_date]
-                day_stats['lines_added'] += added
-                day_stats['lines_deleted'] += deleted
-                day_stats['files_changed'] += 1
-            except (ValueError, TypeError):
-                # Skip malformed lines
-                continue
-    
-    # Convert set of contributors to count
-    for day_data in daily_stats.values():
-        day_data['contributors'] = len(day_data['contributors'])
-        
-        # Convert orgs to formatted string
-        orgs = '|'.join(f"{org}:{count}" for org, count in day_data['orgs'].items())
-        day_data['orgs'] = orgs
-    
-    return daily_stats
 
-def write_csv(stats, output_file):
-    """Write daily stats to CSV."""
+    current_date = None
+    author_org = None  # Initialize author_org at the function level
+
+    for line in sys.stdin:
+        line = line.strip()
+
+        # Commit line
+        if is_commit_line(line):
+            # Parse new commit
+            parts = line.split()
+            if len(parts) < 3:
+                print(f"Warning: Malformed commit line: {line}", file=sys.stderr)
+                continue
+
+            # Parsing commit details
+            _, commit_hash, date = parts[:3]
+            author = parts[3] if len(parts) > 3 else "unknown@unknown.com"
+            
+            # If date changes, yield previous date's stats
+            if current_date and current_date != date:
+                # Prepare and yield each unique combination of date and org
+                for org, org_count in current_stats[current_date]['orgs'].items():
+                    yield {
+                        'date': current_date,
+                        'commits': 1,
+                        'orgs': f'{org}:{org_count}',
+                        'lines_added': current_stats[current_date]['lines_added'],
+                        'lines_deleted': current_stats[current_date]['lines_deleted'],
+                        'files_changed': current_stats[current_date]['files_changed'],
+                        'contributors': 1  # Always 1 commit per line
+                    }
+                
+                # Reset stats for new date
+                current_stats[date] = {
+                    'lines_added': 0,
+                    'lines_deleted': 0,
+                    'files_changed': 0,
+                    'orgs': defaultdict(int)
+                }
+
+            current_date = date
+            author_org = get_org(author)
+            # Initialize org count for this commit
+            current_stats[current_date]['orgs'][author_org] += 1
+
+        # File stats line
+        elif current_date and is_file_line(line):
+            try:
+                added, deleted, filename = line.split('\t')
+                # Convert '-' to 0 for binary files
+                added_lines = int(added) if added != '-' else 0
+                deleted_lines = int(deleted) if deleted != '-' else 0
+                
+                current_stats[current_date]['lines_added'] += added_lines
+                current_stats[current_date]['lines_deleted'] += deleted_lines
+                current_stats[current_date]['files_changed'] += 1
+            except (ValueError, TypeError) as e:
+                print(f"Warning: Malformed file stats line: {line} ({e})", file=sys.stderr)
+
+    # Yield final date's stats
+    if current_date:
+        for org, org_count in current_stats[current_date]['orgs'].items():
+            yield {
+                'date': current_date,
+                'commits': 1,
+                'orgs': f'{org}:{org_count}',
+                'lines_added': current_stats[current_date]['lines_added'],
+                'lines_deleted': current_stats[current_date]['lines_deleted'],
+                'files_changed': current_stats[current_date]['files_changed'],
+                'contributors': 1  # Always 1 commit per line
+            }
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: process.py <output_csv>", file=sys.stderr)
+        sys.exit(1)
+
+    output_csv = sys.argv[1]
+
+    # Remove last line from existing CSV
+    remove_last_line(output_csv)
+
+    # Prepare CSV file
     fieldnames = [
         'date', 'commits', 'orgs', 
         'lines_added', 'lines_deleted', 
         'files_changed', 'contributors'
     ]
-    
-    # Sort stats by date
-    sorted_stats = sorted(
-        (dict(date=date, **data) for date, data in stats.items()), 
-        key=lambda x: x['date']
-    )
-    
-    with open(output_file, 'w', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(sorted_stats)
 
-def main():
-    # Read from stdin
-    log_lines = sys.stdin.readlines()
-    
-    # Parse log lines
-    daily_stats = parse_git_log(log_lines)
-    
-    # Write to CSV
-    write_csv(daily_stats, sys.argv[1] if len(sys.argv) > 1 else '-')
+    # Open CSV for appending
+    file_exists = os.path.exists(output_csv) and os.path.getsize(output_csv) > 0
+    with open(output_csv, 'a', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        
+        # Write headers if file is empty
+        if not file_exists:
+            writer.writeheader()
+
+        # Write new stats
+        for stats in commit_stats_generator():
+            writer.writerow(stats)
 
 if __name__ == '__main__':
     main()
