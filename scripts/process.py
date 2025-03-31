@@ -4,6 +4,11 @@ import csv
 import os
 from collections import defaultdict
 
+# Force stdout and stderr to flush immediately
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
+
 def get_org(email):
     """Extract organization name from email address.
     Example: whoever@microsoft.com -> microsoft
@@ -153,6 +158,7 @@ def main():
         # Write new stats
         for stats in commit_stats_generator():
             writer.writerow(stats)
+            csvfile.flush()
 
 if __name__ == '__main__':
     main()

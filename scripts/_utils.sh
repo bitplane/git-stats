@@ -3,7 +3,7 @@
 # Misc helper functions
 
 # get_last_date <csv-file> [default-date]
-#  returns the most recent date in the CSV, or the default if file is empty.
+#  returns the most recent date in the CSV, or the default if file is empty or has only header.
 get_last_date() {
   local csv_file="$1"
   local default_date="${2:-0001-01-01}"
@@ -26,9 +26,13 @@ get_last_date() {
         echo "$last_date"
       fi
     else
+      # CSV exists but contains no date rows or just a header
+      echo "Warning: No date rows found in $csv_file, using default date $default_date" >&2
       echo "$default_date"
     fi
   else
+    # File doesn't exist or is empty
+    echo "Note: CSV $csv_file is empty or doesn't exist, using default date $default_date" >&2
     echo "$default_date"
   fi
 }
