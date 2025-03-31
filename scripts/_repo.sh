@@ -16,7 +16,7 @@ clone_or_update_repo() {
 
   if [ -d "$repo_path" ]; then
     cd "$repo_path" >&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
-    git fetch --tags --filter=blobs:none >&2
+    git fetch --tags --filter=blob:none >&2
   else
     # Get the last date from CSV using the Python script
     if [ -f "$csv_file" ]; then
