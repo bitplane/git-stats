@@ -11,5 +11,4 @@ https://github.com/rust-lang/rust.git
 https://github.com/golang/go.git
 https://github.com/systemd/systemd.git
 https://github.com/openssl/openssl.git
-https://github.com/docker/cli.git
 https://github.com/kubernetes/kubernetes.git
