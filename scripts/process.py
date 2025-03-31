@@ -1,4 +1,77 @@
-#!/usr/bin/env python3
+def parse_git_log(log_lines):
+    """
+    Parse git log input and aggregate daily statistics.
+    
+    Input format expected:
+    COMMIT <hash> <YYYY-MM-DD> <author-email>
+    <added>\t<deleted>\t<filename>
+    ...
+    COMMIT <hash> <YYYY-MM-DD> <author-email>
+    ...
+    """
+    daily_stats = defaultdict(lambda: {
+        'commits': 0,
+        'lines_added': 0,
+        'lines_deleted': 0,
+        'files_changed': 0,
+        'contributors': set(),
+        'orgs': defaultdict(int)
+    })
+    
+    current_date = None
+    current_author = None
+    
+    for line in log_lines:
+        line = line.strip()
+        
+        # Commit line
+        if line.startswith('COMMIT'):
+            # Split carefully to handle potential spaces in email
+            parts = line.split(' ', 3)
+            if len(parts) < 4:
+                print(f"Warning: Unexpected commit line format: {line}", file=sys.stderr)
+                continue
+            
+            _, hash_val, date, author = parts
+            current_date = date
+            current_author = author
+            
+            # Extract domain from email
+            try:
+                _, domain = author.split('@')
+            except (ValueError, IndexError):
+                domain = 'unknown'
+            
+            # Update daily stats
+            day_stats = daily_stats[current_date]
+            day_stats['commits'] += 1
+            day_stats['contributors'].add(current_author)
+            day_stats['orgs'][domain] += 1
+        
+        # Numstat line (added\tdeleted\tfilename)
+        elif '\t' in line:
+            try:
+                added, deleted, _ = line.split('\t')
+                added = int(added)
+                deleted = int(deleted)
+                
+                day_stats = daily_stats[current_date]
+                day_stats['lines_added'] += added
+                day_stats['lines_deleted'] += deleted
+                day_stats['files_changed'] += 1
+            except (ValueError, TypeError):
+                # Skip malformed lines
+                continue
+    
+    # Convert set of contributors to count
+    for day_data in daily_stats.values():
+        day_data['contributors'] = len(day_data['contributors'])
+        
+        # Convert orgs to formatted string
+        orgs = '|'.join(f"{org}:{count}" for org, count in day_data['orgs'].items())
+        day_data['orgs'] = orgs
+    
+    return daily_stats#!/usr/bin/env python3
 import sys
 import csv
 from collections import defaultdict
