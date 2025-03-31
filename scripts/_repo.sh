@@ -1,8 +1,8 @@
 #!/bin/bash
-# scripts/repo.sh
+# scripts/_repo.sh
 # Provides two functions used by stats.sh:
 #   1) clone_or_update_repo <repo-url> <cache-dir>
-#   2) extract_log          <repo-dir>  <since-date>
+#   2) extract_log          <repo-dir>  <since>
 
 clone_or_update_repo() {
   local repo_url="$1"
@@ -43,22 +43,29 @@ clone_or_update_repo() {
 
 extract_log() {
   local repo_dir="$1"
-  local since_date="${2:-0001-01-01}"
+  local since="$2"  # Will be a commit hash or empty
 
-  echo "Extracting log since $since_date from $repo_dir" >&2
   cd "$repo_dir" 2>&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
 
   # Use absolute path for log file
   local log_file
   log_file="$(pwd).log"
 
-  # Comprehensive log command for bare repository
-  # Tee the output to a log file for inspection
-  git log --all \
-    --since="$since_date" \
+  # Check if we have a since parameter
+  local log_cmd
+  if [ -n "$since" ]; then
+    echo "Extracting log since commit $since" >&2
+    log_cmd="git log $since..HEAD"
+  else
+    echo "Extracting entire log history" >&2
+    log_cmd="git log --all"
+  fi
+
+  # Execute the log command
+  eval "$log_cmd" \
     --date=short \
     --pretty='tformat:COMMIT %H %ad %aE' \
     --numstat \
-    --reverse 2>&2 | \
+    --reverse | \
   tee "$log_file"
 }

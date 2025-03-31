@@ -19,19 +19,33 @@ repo_name="$(basename "${repo_url%.git}")"
 cache_dir=".cache"
 data_dir="data"
 csv_file="$data_dir/${repo_name}.csv"
+latest_file="$data_dir/${repo_name}.latest"
 temp_stats="/tmp/${repo_name}_stats.tmp"
 
 ensure_dir "$cache_dir"
 ensure_dir "$data_dir"
 
-# Find last date from existing CSV, default "0001-01-01" if none
-last_date="$(get_last_date "$csv_file")"
-echo "Processing commits since $last_date for $repo_name"
+# Get the last processed commit hash if available
+since_arg=""
+if [ -f "$latest_file" ]; then
+  last_hash=$(cat "$latest_file")
+  if [ -n "$last_hash" ]; then
+    since_arg="$last_hash~1" # Start from parent of last processed commit
+    echo "Processing commits since hash $last_hash for $repo_name"
+  else
+    echo "Empty hash file found. Processing all commits for $repo_name"
+    since_arg="0001-01-01" # Practically the beginning of time
+  fi
+else
+  # No hash file - for the first run, we process everything
+  echo "No previous hash file found. Processing all commits for $repo_name"
+  since_arg="0001-01-01" # Practically the beginning of time
+fi
 
 # Clone or update
 repo_dir="$(clone_or_update_repo "$repo_url" "$cache_dir")"
 
-# Extract raw git log (since last_date), process with Python script
-extract_log "$repo_dir" "$last_date" | python3 "${SCRIPT_DIR}/process.py" "$csv_file"
+# Extract raw git log and process with Python script
+extract_log "$repo_dir" "$since_arg" | python3 "${SCRIPT_DIR}/process.py" "$csv_file"
 
 echo "Stats updated for $repo_name"
