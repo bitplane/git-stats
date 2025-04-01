@@ -31,11 +31,11 @@ repo_dir="$(clone_or_update_repo "$repo_url" "$cache_dir")"
 if [ -f "$latest_file" ] && [ -s "$latest_file" ]; then
   last_hash=$(cat "$latest_file")
   echo "Processing commits since hash $last_hash for $repo_name"
-  extract_log "$repo_dir" "$last_hash" | python3 "${SCRIPT_DIR}/process.py" "$csv_file"
+  extract_log "$repo_dir" "$last_hash" | tee "$repo_dir".log | python3 "${SCRIPT_DIR}/process.py" "$csv_file"
 else
   # First run - no filter
   echo "No previous hash found. Processing all commits for $repo_name"
-  extract_log "$repo_dir" "" | python3 "${SCRIPT_DIR}/process.py" "$csv_file"
+  extract_log "$repo_dir" "" | tee "$repo_dir".log | python3 "${SCRIPT_DIR}/process.py" "$csv_file"
 fi
 
 echo "Stats updated for $repo_name"

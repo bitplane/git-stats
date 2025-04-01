@@ -16,18 +16,17 @@ clone_or_update_repo() {
 
   if [ -d "$repo_path" ]; then
     cd "$repo_path" >&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
-    git fetch --tags --filter=blob:none >&2
+    git fetch --tags >&2
   else
     # Get the last date from CSV using the Python script
     if [ -f "$csv_file" ]; then
       local shallow_date=$(python3 scripts/get_last_date.py "$csv_file" "$(date -d "-30 days" +%Y-%m-%d)")
       echo "Using shallow-since=$shallow_date from CSV history" >&2
-      git clone --bare --filter=blob:none --shallow-since="$shallow_date" "$repo_url" "$repo_path" >&2
+      git clone --bare --shallow-since="$shallow_date" "$repo_url" "$repo_path" >&2
     else
-      # No CSV exists yet, use 30 days as fallback
-      local shallow_date=$(date -d "-30 days" +%Y-%m-%d)
+      local shallow_date=1970-01-01
       echo "No CSV history found, using shallow-since=$shallow_date" >&2
-      git clone --bare --filter=blob:none --shallow-since="$shallow_date" "$repo_url" "$repo_path" >&2
+      git clone --bare --shallow-since="$shallow_date" "$repo_url" "$repo_path" >&2
     fi
     cd "$repo_path" >&2 || { echo "Failed to change to repository directory" >&2; exit 1; }
   fi
