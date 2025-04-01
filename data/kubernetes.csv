@@ -3923,5 +3923,8 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-24,10,users:4|gmail:3|redhat:2|google:1,207,153,8,10
 2025-03-25,13,gmail:8|users:5,2983,1574,94,13
 2025-03-26,4,google:2|users:2,47549,9894,149,4
-2025-03-27,2,google:2,32,6,4,2
-2025-03-28,2,google:1|users:1,140,27,4,2
+2025-03-27,2,gmail:2|google:2,114,114,32,2
+2025-03-28,2,gmail:2|google:1|users:1,2403,2335,118,2
+2025-03-29,1,gmail:1,6,6,3,1
+2025-03-31,6,users:1|google:5,24,39,7,6
+2025-04-01,2,users:2,0,0,0,2

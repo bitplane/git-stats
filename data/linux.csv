@@ -7382,11 +7382,12 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-23,4,kernel:1|goodmis:1|gmail:2,14,29,17,4
 2025-03-24,105,redhat:4|intel:9|linux-foundation:48|suse:3|arndb:2|kernel:19|ford:1|gmail:7|linaro:2|iscas:1|google:3|linux:3|armlinux:1|trustnetic:2,458,273,68,105
 2025-03-25,79,redhat:1|kernel:25|google:3|linutronix:1|yandex-team:1|gmail:3|iscas:2|alien8:1|linux-foundation:35|arm:4|tinyisr:1|purestorage:1|altera:1,381,663,26,79
-2025-03-26,43,suse:15|linutronix:1|redhat:1|canb:1|kernel:4|linux-foundation:14|bootlin:2|google:3|gmail:1|opinsys:1,50,48,12,43
+2025-03-26,1,linux:1|suse:15|linutronix:1|redhat:1|canb:1|kernel:4|linux-foundation:14|bootlin:2|google:3|gmail:1|opinsys:1,153,151,10,1
 2025-03-27,72,suse:2|gmail:1|kernel:5|linux-foundation:28|nxp:1|google:34|oracle:1,111,8,14,72
-2025-03-28,13,linux-foundation:13,287,252,12,13
-2025-03-29,19,linux-foundation:19,0,0,0,19
-2025-03-30,7,linux-foundation:7,0,0,0,7
+2025-03-28,1,linux:1|linux-foundation:13,40115013,0,87914,1
+2025-03-29,6,linux:6|linux-foundation:19,73,53,13,6
+2025-03-30,4,linux:4|linux-foundation:7,76,10,10,4
+2025-03-31,4,anton-paar:1|linux-foundation:3,40504392,1,88770,4
 2030-08-14,1,linux:1,1,1,1,1
 2037-04-25,1,ffwll:1,19,23,1,1
 2077-09-15,2,weissschuh:2,23,4,2,2

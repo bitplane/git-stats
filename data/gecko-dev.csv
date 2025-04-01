@@ -9854,4 +9854,5 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-28,83,mozilla:45|gmail:16|crisal:7|redhat:1|kde:1|igalia:4|queze:1|outlook:1|lissyx:5|lodolo:1|users:1,47203,60214,836,83
 2025-03-29,71,crisal:1|mozilla:13|eqrion:1|gmail:5|chromium:29|users:4|microsoft:2|foolip:6|igalia:2|google:1|intel:1|arandomurl:4|birchill:2,33615,3639,297,71
 2025-03-30,11,mozilla:9|igalia:1|gmail:1,693,509,34,11
-2025-03-31,8,mozilla:7|igalia:1,1836,56,36,8
+2025-03-31,162,mozilla:112|crisal:4|yahoo:2|gmail:14|igalia:5|queze:3|drnd:1|cs:1|outlook:3|robwu:1|max-inden:1|jwels:1|brennie:6|torproject:1|jeurissen:1|birchill:1|intuitionlibrary:2|karlt:5|darktrojan:1|d-toybox:5,22913,10343,793,162
+2025-04-01,79,mozilla:40|karlt:7|darktrojan:1|gmail:6|birchill:1|intuitionlibrary:2|mac:17|d-toybox:3|ptrcnull:1|iki:1,41808,46523,1112,79

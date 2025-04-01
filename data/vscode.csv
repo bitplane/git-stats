@@ -3313,4 +3313,5 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-28,4,users:1|microsoft:2|gmail:1,2598585,127,8208,4
 2025-03-29,1,microsoft:1,2598830,0,8180,1
 2025-03-30,3,users:1|gmail:2,7,7,3,3
-2025-03-31,12,outlook:2|microsoft:4|users:4|gmail:2,533,454,18,12
+2025-03-31,20,microsoft:21|users:6|gmail:3|outlook:2,2599657,598,8240,20
+2025-04-01,13,outlook:1|users:1|microsoft:2|gmail:9,2599675,119,8213,13

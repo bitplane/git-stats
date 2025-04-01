@@ -1,7 +1,7 @@
 https://github.com/coreutils/coreutils.git
 https://github.com/GNOME/glib.git
 https://github.com/mirror/busybox.git
-https://github.com/systemd/systemd.git
+git://anongit.freedesktop.org/systemd/systemd
 https://github.com/torvalds/linux.git
 https://github.com/python/cpython.git
 https://github.com/microsoft/vscode.git
