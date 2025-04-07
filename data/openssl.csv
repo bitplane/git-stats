@@ -6925,7 +6925,7 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2024-06-07,5,openssl:3|gmail:2,542,100,23,5
 2024-06-10,5,arista:4|dencrypt:1,92,16,11,5
 2024-06-11,6,in:5|dencrypt:1,417,277,16,6
-2024-06-14,6,dencrypt:6,5,34,7,6
+2024-06-14,1,akamai:1|dencrypt:6,14,2,1,1
 2024-06-17,27,gmail:5|binaryparadox:5|openssl:15|wilbur:2,518,38,49,27
 2024-06-18,8,me:1|clickhouse:6|wilbur:1,516,35,24,8
 2024-06-19,22,clickhouse:3|erbsland:3|openssl:16,931,202,49,22
@@ -7065,7 +7065,7 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2024-11-18,1,openssl:1,4,13,1,1
 2024-11-19,12,openssl:10|foxmail:1|oracle:1,1706,146,39,12
 2024-11-20,19,gmail:1|ugent:12|oracle:6,245,28,25,19
-2024-11-21,3,openssl:1|oracle:2,718,465,22,3
+2024-11-21,1,redhat:1|openssl:1|oracle:2,48,0,1,1
 2024-11-23,1,users:1,4,3,1,1
 2024-11-25,20,openssl:6|google:6|cs:1|gmail:7,217,66,27,20
 2024-11-26,14,openssl:8|yandex:6,255,121,23,14
@@ -7138,7 +7138,7 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-02-08,4,dukhovni:4,8,12,8,4
 2025-02-09,8,hotmail:5|dukhovni:3,192,430,17,8
 2025-02-10,7,intel:1|linux:4|oracle:2,681,106,18,7
-2025-02-11,34,openssl:24|dukhovni:1|users:1|gmail:1|oracle:1|huawei:1|us:5,8832,2362,386,34
+2025-02-11,2,intel:2|openssl:24|dukhovni:1|users:1|gmail:1|oracle:1|huawei:1|us:5,717,20,6,2
 2025-02-12,22,dukhovni:3|openssl:2|xry111:4|gmail:10|mail:1|nexbridge:2,714,545,66,22
 2025-02-13,8,dukhovni:2|openssl:5|huawei:1,268,423,17,8
 2025-02-14,27,openssl:6|hotmail:1|dukhovni:3|gmail:8|ahnlab:3|proton:6,8652,552,47,27
@@ -7174,12 +7174,17 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-18,28,oracle:2|openssl:18|cryptonext-security:2|rit:6,864,162,64,28
 2025-03-19,8,openssl:2|yandex:6,76,38,18,8
 2025-03-20,20,hotmail:8|openssl:6|yandex:6,241,71,23,20
-2025-03-21,11,oracle:2|hotmail:4|brukerfeil:5,109,9,17,11
+2025-03-21,1,hotmail:5|oracle:2|brukerfeil:5,6,1,1,1
 2025-03-23,6,hotmail:4|dukhovni:2,64,6,6,6
 2025-03-24,16,openssl:10|hotmail:2|dukhovni:4,144,54,22,16
 2025-03-25,18,openssl:14|hotmail:4,513,367,45,18
 2025-03-26,2,purdue:7|dukhovni:3|openssl:2|gmail:4,175,106,11,2
 2025-03-27,5,dukhovni:6|gmail:6|openssl:9,65,45,20,5
-2025-03-28,2,oracle:5,2,2,2,2
+2025-03-28,5,openssl:4|tuta:1|oracle:5,24,22,6,5
+2025-03-29,1,openssl:1,73,1,1,1
 2025-03-30,1,openssl:1,3,0,1,1
-2025-03-31,1,oracle:1,2,6,1,1
+2025-03-31,6,gmail:3|intel:1|openssl:1|purdue:1|oracle:1,63,59,15,6
+2025-04-01,4,openssl:3|intel:1,551,11,15,4
+2025-04-02,1,gmail:1,29,1,1,1
+2025-04-03,1,breakpoint:1|openssl:1,2,3,1,1
+2025-04-04,3,openssl:1|gmail:2,45,3,4,3

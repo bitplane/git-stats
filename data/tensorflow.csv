@@ -3422,3 +3422,7 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-30,7,tensorflow:34|google:7,7617715,231,35152,7
 2025-03-31,43,tensorflow:19|google:38|nvidia:6,5514,2424,189,43
 2025-04-01,14,tensorflow:7|google:6|platin:1,822,729,54,14
+2025-04-03,28,tensorflow:13|google:15,7629915,1490,35236,28
+2025-04-04,4,tensorflow:9|google:14|nvidia:3|amd:2,353,192,19,4
+2025-04-05,6,tensorflow:4|google:2,165,313,17,6
+2025-04-06,5,tensorflow:4|google:1,7,11,7,5

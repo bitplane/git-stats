@@ -3313,5 +3313,10 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-28,4,users:1|microsoft:2|gmail:1,2598585,127,8208,4
 2025-03-29,1,microsoft:1,2598830,0,8180,1
 2025-03-30,3,users:1|gmail:2,7,7,3,3
-2025-03-31,20,microsoft:21|users:6|gmail:3|outlook:2,2599657,598,8240,20
-2025-04-01,13,outlook:1|users:1|microsoft:2|gmail:9,2599675,119,8213,13
+2025-03-31,14,gmail:5|users:11|microsoft:28|outlook:2,2599404,501,8205,14
+2025-04-01,33,gmail:16|users:8|microsoft:18|peet:3|outlook:1,2599948,830,8259,33
+2025-04-02,45,outlook:1|gmail:11|microsoft:19|users:13|cat:1,2601577,1418,8306,45
+2025-04-03,42,users:15|gmail:16|microsoft:11,5096,1805,121,42
+2025-04-04,1,gmail:10|microsoft:17|users:14,1,0,1,1
+2025-04-05,8,microsoft:1|gmail:7,5207864,119,16406,8
+2025-04-06,7,users:1|gmail:6,244,90,22,7

@@ -10549,4 +10549,10 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-29,10,users:6|gmail:4,393,202,33,10
 2025-03-30,16,users:8|gmail:3|python:4|proton:1,405,193,35,16
 2025-03-31,11,users:10|gmail:4|redhat:1|python:1|hotpy:1|sobolevn:1,86,69,24,11
-2025-04-01,5,chaquo:1|gmail:3|users:1,356,183,11,5
+2025-04-01,8,python:1|users:3|meta:2|gmail:4|microsoft:2|chaquo:1,2718,1619,93,8
+2025-04-02,12,riseup:1|gmail:5|sobolevn:1|python:2|hotpy:1|users:1|hotmail:1,2295,2176,46,12
+2025-04-03,8,python:2|users:1|hotpy:1|gmail:3|arm:1,1890,81,46,8
+2025-04-04,1,gmail:11|riseup:1|python:1|users:7|hotpy:1,124,69,11,1
+2025-04-05,14,users:6|gmail:5|proton:1|python:2,747,196,32,14
+2025-04-06,14,python:2|gmail:7|manjusaka:1|proton:1|Gmail:1|sobolevn:1|emmatyping:1,450,88,36,14
+2025-04-07,2,pku:1|gmail:1,72,1,4,2

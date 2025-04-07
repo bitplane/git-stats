@@ -9851,8 +9851,13 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-25,281,mozilla:177|gmail:19|jeffboek:5|lissyx:1|lodolo:2|crisal:16|redhat:5|queze:1|franjaru:1|hskupin:2|users:19|yahoo:3|iki:1|brennie:4|kaply:1|glandium:1|intel:3|igalia:2|annevk:1|chromium:14|google:1|florian:1|microsoft:1,32203,15783,1374,281
 2025-03-26,239,mozilla:124|ga2:5|brennie:2|asutherland:7|thelayzells:9|lodolo:1|gmail:24|yahoo:3|users:4|queze:13|protonmail:1|hskupin:4|redhat:1|crisal:9|cs:1|igalia:3|loongson:1|skippinet:2|6a68:3|iki:3|hoppipolla:2|coole-files:1|glandium:2|chromium:9|microsoft:1|annevk:1|w3:2|google:1,59833,26604,1706,239
 2025-03-27,167,mozilla:105|gmail:27|users:3|queze:1|glandium:1|igalia:5|crisal:15|kde:1|iki:1|yahoo:1|coole-files:1|brennie:6,48060,47689,1686,167
-2025-03-28,83,mozilla:45|gmail:16|crisal:7|redhat:1|kde:1|igalia:4|queze:1|outlook:1|lissyx:5|lodolo:1|users:1,47203,60214,836,83
-2025-03-29,71,crisal:1|mozilla:13|eqrion:1|gmail:5|chromium:29|users:4|microsoft:2|foolip:6|igalia:2|google:1|intel:1|arandomurl:4|birchill:2,33615,3639,297,71
+2025-03-28,4,mozilla:49|gmail:16|crisal:7|redhat:1|kde:1|igalia:4|queze:1|outlook:1|lissyx:5|lodolo:1|users:1,186,65,7,4
+2025-03-29,1,mozilla:14|crisal:1|eqrion:1|gmail:5|chromium:29|users:4|microsoft:2|foolip:6|igalia:2|google:1|intel:1|arandomurl:4|birchill:2,28,0,14,1
 2025-03-30,11,mozilla:9|igalia:1|gmail:1,693,509,34,11
-2025-03-31,162,mozilla:112|crisal:4|yahoo:2|gmail:14|igalia:5|queze:3|drnd:1|cs:1|outlook:3|robwu:1|max-inden:1|jwels:1|brennie:6|torproject:1|jeurissen:1|birchill:1|intuitionlibrary:2|karlt:5|darktrojan:1|d-toybox:5,22913,10343,793,162
-2025-04-01,79,mozilla:40|karlt:7|darktrojan:1|gmail:6|birchill:1|intuitionlibrary:2|mac:17|d-toybox:3|ptrcnull:1|iki:1,41808,46523,1112,79
+2025-03-31,23,apple:2|mozilla:117|chromium:11|google:1|gmail:15|microsoft:1|foolip:2|crisal:4|yahoo:2|igalia:5|queze:3|drnd:1|cs:1|outlook:3|robwu:1|max-inden:1|jwels:1|brennie:6|torproject:1|jeurissen:1|birchill:1|intuitionlibrary:2|karlt:5|darktrojan:1|d-toybox:5,3162,681,119,23
+2025-04-01,164,mozilla:146|gmail:24|glandium:2|crisal:8|yahoo:2|igalia:4|drnd:2|max-inden:1|mac:26|cs:2|monotonous:1|lebihan:1|hskupin:4|coole-files:1|lodolo:1|lissyx:1|karlt:8|darktrojan:1|birchill:1|intuitionlibrary:2|d-toybox:3|ptrcnull:1|iki:1,58406064,11381,384587,164
+2025-04-02,210,mozilla:125|gmail:29|queze:1|lodolo:1|ziade:1|igalia:1|outlook:3|crisal:11|redhat:2|lebihan:1|brennie:5|hotmail:1|nicoburns:8|intuitionlibrary:2|lissyx:1|chromium:10|google:4|webkit:1|microsoft:1|appspot:1|intel:1,48665,36738,1456,210
+2025-04-03,184,mozilla:96|gmail:45|queze:24|outlook:2|crisal:9|cs:1|hskupin:2|brennie:1|lissyx:1|eqrion:1|igalia:1|6a68:1,36736,45430,1048,184
+2025-04-04,7,mozilla:22|karlt:1|outlook:3|crisal:8|6a68:1|gmail:9|darktrojan:1|ga2:7,317,243,11,7
+2025-04-05,16,mozilla:11|karlt:1|protonmail:3|gmail:1,1528,1028,89,16
+2025-04-06,1,mozilla:1,327,0,10,1
