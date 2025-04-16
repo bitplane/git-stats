@@ -3426,3 +3426,12 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-04-04,4,tensorflow:9|google:14|nvidia:3|amd:2,353,192,19,4
 2025-04-05,6,tensorflow:4|google:2,165,313,17,6
 2025-04-06,5,tensorflow:4|google:1,7,11,7,5
+2025-04-08,34,tensorflow:13|gmail:1|google:20,7665907,956,35318,34
+2025-04-09,72,gmail:2|tensorflow:14|google:52|amd:3|nvidia:1,7240,86995,1052,72
+2025-04-10,53,google:39|tensorflow:12|nvidia:1|arm:1,3991,4777,244,53
+2025-04-11,76,google:45|tensorflow:21|gmail:2|amd:3|arm:4|nvidia:1,7931,5331,318,76
+2025-04-12,10,tensorflow:9|google:1,150,146,27,10
+2025-04-13,34,google:25|tensorflow:8|nvidia:1,229,359,96,34
+2025-04-14,132,google:72|tensorflow:55|intel:1|amd:2|nvidia:2,6844,4189,468,132
+2025-04-15,59,google:33|tensorflow:22|arm:2|nvidia:1|amd:1,4423,27043,327,59
+2025-04-16,38,tensorflow:14|google:21|arm:2|amd:1,5866,2804,159,38

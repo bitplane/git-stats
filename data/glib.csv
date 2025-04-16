@@ -6620,7 +6620,7 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2024-01-25,23,tecnocode:6|users:8|3v1n0:2|redhat:1|gnome:6,195,164,20,23
 2024-01-26,15,gnome:12|tecnocode:3,386,466,35,15
 2024-01-28,2,ceridwen:2,93,136,4,2
-2024-01-29,2,redhat:1|tecnocode:1,3,3,2,2
+2024-01-29,1,redhat:2|tecnocode:1,2,7,1,1
 2024-01-30,8,gnome:4|tecnocode:1|redhat:3,86,45,7,8
 2024-01-31,12,tecnocode:7|redhat:4|gnome:1,102,30,8,12
 2024-02-01,5,tecnocode:3|redhat:2,202,29,3,5
@@ -6926,7 +6926,7 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-02-23,5,gmail:1|asciiwolf:1|tecnocode:2|kambanaria:1,1150,1291,3,5
 2025-02-24,1,3v1n0:1|ukr:1|ubuntu:1|tecnocode:4|sc3d:1,2,1,1,1
 2025-02-25,6,sc3d:1|tecnocode:3|qq:1|gnome:1,411,382,4,6
-2025-02-26,18,tecnocode:4|gnome:1|gmail:2|redhat:9|larma:1|collabora:1,528,454,14,18
+2025-02-26,1,sparber:1|tecnocode:4|gnome:1|gmail:2|redhat:9|larma:1|collabora:1,64,17,1,1
 2025-02-27,8,hotmail:1|tecnocode:6|norsjovallen:1,872,852,2,8
 2025-02-28,6,collabora:2|mabishu:1|tecnocode:2|gnome:1,462,391,5,6
 2025-03-03,4,filmsi:1|tecnocode:1|gnome:2,497,489,3,4
@@ -6947,5 +6947,12 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-03-30,4,redhat:1|slmail:1|tecnocode:2,1721,1943,2,4
 2025-04-01,1,gnome:1,1486305,0,2321,1
 2025-04-02,8,gmail:1|redhat:1|3v1n0:6,1486448,16,2330,8
-2025-04-03,10,3v1n0:1|tecnocode:5|gnome:3|gentoo:1,1487607,5,2327,10
-2025-04-04,7,gnome:5|tecnocode:2,1487803,53,2326,7
+2025-04-03,2,tecnocode:6|redhat:1|3v1n0:1|gnome:3|gentoo:1,1487801,46,2324,2
+2025-04-04,9,gnome:10|tecnocode:4|redhat:2,1487980,102,2328,9
+2025-04-05,2,redhat:2,81,41,2,2
+2025-04-07,7,gentoo:1|3v1n0:1|tecnocode:3|redhat:2,4,4,3,7
+2025-04-08,3,gnome:2|tecnocode:1,33,22,2,3
+2025-04-10,19,redhat:4|gnome:15,343,207,20,19
+2025-04-11,3,bellsouth:1|3v1n0:1|tecnocode:1,1,1,1,3
+2025-04-12,3,yeaw:1|tecnocode:1|gnome:1,10,5,3,3
+2025-04-14,3,gmail:1|redhat:2,2,2,2,3

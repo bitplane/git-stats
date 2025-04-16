@@ -8348,5 +8348,15 @@ date,commits,orgs,lines_added,lines_deleted,files_changed,contributors
 2025-04-02,619,chromium:272|chops-service-accounts:8|skia-public:115|skia-corp:22|microsoft:18|google:163|system:1|opera:2|intel:3|gmail:1|igalia:11|ucsbalum:1|island:1|appspot:1,47248,27097,4037,619
 2025-04-03,606,chromium:225|skia-public:125|igalia:11|chops-service-accounts:10|google:174|skia-corp:41|microsoft:13|januschka:2|kde:1|island:1|bytedance:1|appspot:2,41288,22448,3815,606
 2025-04-04,33,skia-public:100|skia-corp:31|google:125|chromium:193|developer:1|chops-service-accounts:4|igalia:2|intel:1|microsoft:3|gmail:1|googlemail:1|opera:1,913,289,99,33
-2025-04-05,113,skia-public:75|chromium:6|skia-corp:17|chops-service-accounts:4|google:8|intel:1|googlemail:1|igalia:1,2059,1220,328,113
-2025-04-06,77,skia-public:51|chops-service-accounts:5|skia-corp:11|chromium:5|google:5,848,358,229,77
+2025-04-05,42,skia-public:107|googlemail:2|google:9|skia-corp:21|igalia:2|chromium:8|chops-service-accounts:5|intel:1,58236498,151,470333,42
+2025-04-06,115,skia-public:116|chops-service-accounts:12|skia-corp:24|chromium:29|google:10|microsoft:1,2559,1291,358,115
+2025-04-07,669,microsoft:5|skia-public:151|google:204|chops-service-accounts:9|chromium:253|intel:1|skia-corp:39|opera:2|januschka:1|igalia:2|kde:1|developer:1,44052,31600,3507,669
+2025-04-08,601,skia-public:144|xperi:1|chromium:220|skia-corp:40|google:160|igalia:8|developer:3|chops-service-accounts:7|gmail:3|microsoft:11|januschka:2|intel:2,35998,23015,3771,601
+2025-04-09,561,chromium:193|skia-public:148|google:155|appspot:2|skia-corp:40|microsoft:8|chops-service-accounts:5|igalia:3|intel:2|developer:2|opera:2|amd:1,49600,15990,3116,561
+2025-04-10,577,chromium:209|skia-public:131|skia-corp:45|bytedance:1|google:163|chops-service-accounts:4|microsoft:12|opera:2|igalia:4|developer:1|januschka:1|gmail:2|intel:2,36582,16597,3482,577
+2025-04-11,494,skia-public:120|google:170|chromium:155|skia-corp:25|chops-service-accounts:6|opera:2|igalia:2|microsoft:10|island:1|gmail:1|developer:1|appspot:1,168274,13232,2736,494
+2025-04-12,93,skia-public:70|skia-corp:12|chromium:5|google:5|chops-service-accounts:1,1529,653,691,93
+2025-04-13,106,skia-public:67|skia-corp:12|chromium:10|google:10|chops-service-accounts:2|intel:3|igalia:2,3133,1569,191,106
+2025-04-14,556,skia-public:128|intel:1|google:156|chromium:207|skia-corp:34|appspot:1|microsoft:10|chops-service-accounts:5|opera:3|yandex-team:1|gmail:2|keithcirkel:1|shift:1|island:1|igalia:3|gentoo:1|developer:1,34198,21404,2684,556
+2025-04-15,617,skia-public:135|google:172|chromium:231|chops-service-accounts:5|gmail:7|januschka:1|skia-corp:34|microsoft:15|igalia:8|intel:2|developer:2|amd:1|appspot:3|lge:1,40186,28208,3248,617
+2025-04-16,443,skia-public:83|microsoft:8|appspot:2|chromium:180|intel:2|google:145|skia-corp:15|chops-service-accounts:3|igalia:3|developer:1|lge:1,28592,33399,3249,443
